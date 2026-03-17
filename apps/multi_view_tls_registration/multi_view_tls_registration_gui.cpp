@@ -2434,7 +2434,7 @@ void display()
                 }
             }
 
-            session.point_clouds_container.render(observation_picking, viewer_decimate_point_cloud, session_dims);
+            session.point_clouds_container.render(observation_picking, viewer_decimate_point_cloud, 1, session_dims);
 
             // spdlog::info("session.point_clouds_container.xy_grid_10x10 " << (int)session.point_clouds_container.xy_grid_10x10 <<
             // std::endl;

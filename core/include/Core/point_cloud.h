@@ -158,11 +158,12 @@ public:
         bool show_with_initial_pose,
         const ObservationPicking& observation_picking,
         int viewer_decmiate_point_cloud,
+        int viewer_reduce_rendered_trajectory,
         bool xz_intersection,
         bool yz_intersection,
         bool xy_intersection,
         double intersection_width,
         bool visible_imu_diff);
-    void render(Eigen::Affine3d pose, int viewer_decmiate_point_cloud, float _render_color[3]);
+    void render(Eigen::Affine3d pose, int viewer_decmiate_point_cloud, int viewer_reduce_rendered_trajectory, float _render_color[3]);
 #endif
 };

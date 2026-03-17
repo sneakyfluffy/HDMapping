@@ -507,7 +507,7 @@ void display()
     for (int i = 0; i < session.point_clouds_container.point_clouds.size(); i++)
     {
         session.point_clouds_container.point_clouds[i].render(
-            false, ObservationPicking(), viewer_decmiate_point_cloud, false, false, false, 100000, false);
+            false, ObservationPicking(), viewer_decmiate_point_cloud, 1, false, false, false, 100000, false);
     }
 
     if (session.point_clouds_container.point_clouds.size() == 1)

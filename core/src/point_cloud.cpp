@@ -1524,6 +1524,7 @@ void PointCloud::render(
     bool show_with_initial_pose,
     const ObservationPicking& observation_picking,
     int viewer_decimate_point_cloud,
+    int viewer_reduce_rendered_trajectory,
     bool xz_intersection,
     bool yz_intersection,
     bool xy_intersection,
@@ -1633,7 +1634,7 @@ void PointCloud::render(
 
             glLineWidth(line_width);
             glBegin(GL_LINE_STRIP);
-            for (int i = 0; i < this->local_trajectory.size(); i++)
+            for (int i = 0; i < this->local_trajectory.size(); i += viewer_reduce_rendered_trajectory)
             {
                 auto m = this->m_pose * this->local_trajectory[i].m_pose;
                 glVertex3f(m(0, 3), m(1, 3), m(2, 3));
@@ -1777,7 +1778,8 @@ void PointCloud::render(
     }
 }
 
-void PointCloud::render(Eigen::Affine3d pose, int viewer_decimate_point_cloud, float _render_color[3])
+void PointCloud::render(
+    Eigen::Affine3d pose, int viewer_decimate_point_cloud, int viewer_reduce_rendered_trajectory, float _render_color[3])
 {
     if (this->visible)
     {
@@ -1797,7 +1799,7 @@ void PointCloud::render(Eigen::Affine3d pose, int viewer_decimate_point_cloud, f
 
         glColor3f(_render_color[0], _render_color[1], _render_color[2]);
         glBegin(GL_LINE_STRIP);
-        for (int i = 0; i < this->local_trajectory.size(); i++)
+        for (int i = 0; i < this->local_trajectory.size(); i += viewer_reduce_rendered_trajectory)
         {
             auto m = this->m_pose * this->local_trajectory[i].m_pose;
             glVertex3f(m(0, 3), m(1, 3), m(2, 3));

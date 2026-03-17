@@ -139,62 +139,65 @@ void update_rgd(
 
         if (bucket_it != buckets.end())
         {
-            auto& this_bucket = bucket_it->second;
-            this_bucket.number_of_points++;
-            const auto& curr_mean = points_global[i].point;
-            const auto& mean = this_bucket.mean;
-            // buckets[index_of_bucket].mean += (mean - curr_mean) / buckets[index_of_bucket].number_of_points;
-
-            auto mean_diff = mean - curr_mean;
-            Eigen::Matrix3d cov_update;
-            cov_update.row(0) = mean_diff.x() * mean_diff;
-            cov_update.row(1) = mean_diff.y() * mean_diff;
-            cov_update.row(2) = mean_diff.z() * mean_diff;
-
-            // this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
-            //                   cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points *
-            //                   this_bucket.number_of_points);
-
-            if (this_bucket.number_of_points == 2)
+            if (bucket_it->second.number_of_points != -1)
             {
-                this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
-                    cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points * this_bucket.number_of_points);
-                this_bucket.cov_inverse = this_bucket.cov.inverse();
+                auto& this_bucket = bucket_it->second;
+                this_bucket.number_of_points++;
+                const auto& curr_mean = points_global[i].point;
+                const auto& mean = this_bucket.mean;
+                // buckets[index_of_bucket].mean += (mean - curr_mean) / buckets[index_of_bucket].number_of_points;
 
-                // limit_covariance(this_bucket.cov);
-            }
+                auto mean_diff = mean - curr_mean;
+                Eigen::Matrix3d cov_update;
+                cov_update.row(0) = mean_diff.x() * mean_diff;
+                cov_update.row(1) = mean_diff.y() * mean_diff;
+                cov_update.row(2) = mean_diff.z() * mean_diff;
 
-            if (this_bucket.number_of_points == 3)
-            {
-                this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
-                    cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points * this_bucket.number_of_points);
-                this_bucket.cov_inverse = this_bucket.cov.inverse();
-                // limit_covariance(this_bucket.cov);
-                //  calculate normal vector
-                Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eigen_solver(this_bucket.cov, Eigen::ComputeEigenvectors);
-                Eigen::Matrix3d eigenVectorsPCA = eigen_solver.eigenvectors();
+                // this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
+                //                   cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points *
+                //                   this_bucket.number_of_points);
 
-                Eigen::Vector3d nv = eigenVectorsPCA.col(1).cross(eigenVectorsPCA.col(2));
-                nv.normalize();
-
-                // flip towards viewport
-                if (nv.dot(viewport - this_bucket.mean) < 0.0)
+                if (this_bucket.number_of_points == 2)
                 {
-                    nv *= -1.0;
+                    this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
+                        cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points * this_bucket.number_of_points);
+                    this_bucket.cov_inverse = this_bucket.cov.inverse();
+
+                    // limit_covariance(this_bucket.cov);
                 }
-                this_bucket.normal_vector = nv;
-            }
 
-            if (this_bucket.number_of_points > 3)
-            {
-                Eigen::Vector3d& nv = this_bucket.normal_vector;
-
-                if (nv.dot(viewport - this_bucket.mean) >= 0.0)
+                if (this_bucket.number_of_points == 3)
                 {
                     this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
                         cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points * this_bucket.number_of_points);
                     this_bucket.cov_inverse = this_bucket.cov.inverse();
                     // limit_covariance(this_bucket.cov);
+                    //  calculate normal vector
+                    Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eigen_solver(this_bucket.cov, Eigen::ComputeEigenvectors);
+                    Eigen::Matrix3d eigenVectorsPCA = eigen_solver.eigenvectors();
+
+                    Eigen::Vector3d nv = eigenVectorsPCA.col(1).cross(eigenVectorsPCA.col(2));
+                    nv.normalize();
+
+                    // flip towards viewport
+                    if (nv.dot(viewport - this_bucket.mean) < 0.0)
+                    {
+                        nv *= -1.0;
+                    }
+                    this_bucket.normal_vector = nv;
+                }
+
+                if (this_bucket.number_of_points > 3)
+                {
+                    Eigen::Vector3d& nv = this_bucket.normal_vector;
+
+                    if (nv.dot(viewport - this_bucket.mean) >= 0.0)
+                    {
+                        this_bucket.cov = this_bucket.cov * (this_bucket.number_of_points - 1) / this_bucket.number_of_points +
+                            cov_update * (this_bucket.number_of_points - 1) / (this_bucket.number_of_points * this_bucket.number_of_points);
+                        this_bucket.cov_inverse = this_bucket.cov.inverse();
+                        // limit_covariance(this_bucket.cov);
+                    }
                 }
             }
         }
@@ -206,6 +209,33 @@ void update_rgd(
             bucket_to_add.cov_inverse = bucket_to_add.cov.inverse();
             bucket_to_add.number_of_points = 1;
             buckets.emplace(index_of_bucket, bucket_to_add);
+
+            /*Eigen::Vector3d direction = points_global[i].point - viewport;
+            direction.normalize();
+
+            double bucket_norm = b.norm();
+
+            Eigen::Vector3d b_front = points_global[i].point - direction * bucket_norm * j;
+            NDT::Bucket bucket_to_add_front;
+            bucket_to_add_front.mean = b_front;
+            bucket_to_add_front.cov = Eigen::Matrix3d::Identity() * 0.03 * 0.03; // ToDo move to params
+            bucket_to_add_front.cov_inverse = bucket_to_add_front.cov.inverse();
+            bucket_to_add_front.number_of_points = -1; // mark as in front of real bucket
+            auto index_of_bucket_front = get_rgd_index_3d(b_front, b);
+            buckets.emplace(index_of_bucket_front, bucket_to_add_front);
+            if(lookup_count)
+                ++(*lookup_count);
+
+            Eigen::Vector3d b_back = points_global[i].point + direction * bucket_norm * j;
+            NDT::Bucket bucket_to_add_back;
+            bucket_to_add_back.mean = b_back;
+            bucket_to_add_back.cov = Eigen::Matrix3d::Identity() * 0.03 * 0.03; // ToDo move to params
+            bucket_to_add_back.cov_inverse = bucket_to_add_back.cov.inverse();
+            bucket_to_add_back.number_of_points = -1; // mark as in front of real bucket
+            auto index_of_bucket_back = get_rgd_index_3d(b_back, b);
+            buckets.emplace(index_of_bucket_back, bucket_to_add_back);
+            if (lookup_count)
+                ++(*lookup_count);*/
         }
     }
 }

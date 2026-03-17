@@ -175,6 +175,7 @@ bool edge_gizmo = false;
 ProjectSettings project_settings;
 std::vector<Session> sessions;
 
+int viewer_reduce_rendered_trajectory = 1;
 namespace fs = std::filesystem;
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -2484,10 +2485,12 @@ void display()
                 sessions[edges[index_active_edge].index_session_from].point_clouds_container.point_clouds.at(index_src).render(
                     m_src,
                     viewer_decimate_point_cloud,
+                    viewer_reduce_rendered_trajectory,
                     sessions[edges[index_active_edge].index_session_from].point_clouds_container.point_clouds.at(index_src).render_color);
                 sessions[edges[index_active_edge].index_session_to].point_clouds_container.point_clouds.at(index_trg).render(
                     m_trg,
                     viewer_decimate_point_cloud,
+                    viewer_reduce_rendered_trajectory,
                     sessions[edges[index_active_edge].index_session_to].point_clouds_container.point_clouds.at(index_trg).render_color);
             }
         }
@@ -2496,10 +2499,28 @@ void display()
             ObservationPicking observation_picking;
             sessions[first_session_index]
                 .point_clouds_container.point_clouds.at(index_loop_closure_source)
-                .render(false, observation_picking, viewer_decimate_point_cloud, false, false, false, 100000, false);
+                .render(
+                    false,
+                    observation_picking,
+                    viewer_decimate_point_cloud,
+                    viewer_reduce_rendered_trajectory,
+                    false,
+                    false,
+                    false,
+                    100000,
+                    false);
             sessions[second_session_index]
                 .point_clouds_container.point_clouds.at(index_loop_closure_target)
-                .render(false, observation_picking, viewer_decimate_point_cloud, false, false, false, 100000, false);
+                .render(
+                    false,
+                    observation_picking,
+                    viewer_decimate_point_cloud,
+                    viewer_reduce_rendered_trajectory,
+                    false,
+                    false,
+                    false,
+                    100000,
+                    false);
         }
 
         // sessions[first_session_index].point_clouds_container.render();
@@ -2594,7 +2615,7 @@ void display()
         {
             if (session.visible)
             {
-                session.point_clouds_container.render(observation_picking, viewer_decimate_point_cloud);
+                session.point_clouds_container.render(observation_picking, viewer_decimate_point_cloud, viewer_reduce_rendered_trajectory);
                 session.ground_control_points.render(session.point_clouds_container);
                 session.control_points.render(session.point_clouds_container, false);
 
@@ -3732,12 +3753,23 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
             ImGui::InputInt("Points render downsampling", &viewer_decimate_point_cloud, 10, 100);
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip("increase for better performance, decrease for rendering more points");
-            ImGui::SameLine();
+            // ImGui::SameLine();
 
             if (viewer_decimate_point_cloud < 1)
                 viewer_decimate_point_cloud = 1;
 
             ImGui::SameLine();
+
+            ImGui::InputInt("Trajectory reduce render", &viewer_reduce_rendered_trajectory, 10, 100);
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("increase for better performance, decrease for rendering more nodes in the trajectory");
+            // ImGui::SameLine();
+
+            if (viewer_reduce_rendered_trajectory < 1)
+                viewer_reduce_rendered_trajectory = 1;
+
+            ImGui::SameLine();
+
             ImGui::Text("(%.1f FPS)", ImGui::GetIO().Framerate);
         }
         ImGui::EndDisabled();

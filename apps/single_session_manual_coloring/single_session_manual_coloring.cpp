@@ -861,7 +861,7 @@ void display()
         session.point_clouds_container.point_clouds[k].point_size = SystemData::point_size;
     }
 
-    session.point_clouds_container.render(observation_picking, decimation_step);
+    session.point_clouds_container.render(observation_picking, decimation_step, 1);
     // session.ground_control_points.render(session.point_clouds_container);
 
     /*session.point_clouds_container.render({}, {}, session.point_clouds_container.xz_intersection,

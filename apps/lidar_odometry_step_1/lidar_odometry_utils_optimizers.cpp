@@ -1717,16 +1717,19 @@ static void compute_hessian(
 
     if (indoor_it != buckets_indoor.end())
     {
-        add_indoor_hessian_contribution(
-            indoor_it->second,
-            point_source,
-            pose_trig,
-            viewport,
-            ablation_study_use_view_point_and_normal_vectors,
-            ablation_study_use_planarity,
-            ablation_study_use_norm,
-            out_AtPA,
-            out_AtPB);
+        if (indoor_it->second.number_of_points != -1)
+        {
+            add_indoor_hessian_contribution(
+                indoor_it->second,
+                point_source,
+                pose_trig,
+                viewport,
+                ablation_study_use_view_point_and_normal_vectors,
+                ablation_study_use_planarity,
+                ablation_study_use_norm,
+                out_AtPA,
+                out_AtPB);
+        }
     }
 
     // Outdoor contribution (only when hierarchical mode and range >= 5.0)
@@ -1754,15 +1757,18 @@ static void compute_hessian(
 
         if (outdoor_it != buckets_outdoor.end())
         {
-            add_outdoor_hessian_contribution(
-                outdoor_it->second,
-                point_source,
-                pose_trig,
-                viewport,
-                ablation_study_use_view_point_and_normal_vectors,
-                ablation_study_use_planarity,
-                out_AtPA,
-                out_AtPB);
+            if (outdoor_it->second.number_of_points != -1)
+            {
+                add_outdoor_hessian_contribution(
+                    outdoor_it->second,
+                    point_source,
+                    pose_trig,
+                    viewport,
+                    ablation_study_use_view_point_and_normal_vectors,
+                    ablation_study_use_planarity,
+                    out_AtPA,
+                    out_AtPB);
+            }
         }
     }
 }

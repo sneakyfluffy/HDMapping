@@ -28,6 +28,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 
 int viewer_decimate_point_cloud = 1000;
+// int viewer_reduce_rendered_trajectory = 10;
 
 int mouse_old_x, mouse_old_y;
 int mouse_buttons = 0;

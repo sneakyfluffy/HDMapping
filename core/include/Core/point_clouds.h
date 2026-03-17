@@ -78,7 +78,10 @@ public:
         bool xy_grid_01x01,
         PointClouds::PointCloudDimensions dims);
     void render(
-        const ObservationPicking& observation_picking, int viewer_decimate_point_cloud, PointClouds::PointCloudDimensions dims = {});
+        const ObservationPicking& observation_picking,
+        int viewer_decimate_point_cloud,
+        int viewer_reduce_rendered_trajectory,
+        PointClouds::PointCloudDimensions dims = {});
 #endif
     // bool save_poses();
     bool save_poses(const std::string file_name, bool is_subsession);

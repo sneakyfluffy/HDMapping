@@ -2077,7 +2077,17 @@ void display()
         glColor3f(1, 0, 0);
         glBegin(GL_POINTS);
         for (const auto& b : params.buckets_indoor)
+        {
+            if (b.second.number_of_points == -1)
+            {
+                glColor3f(0, 1, 1);
+            }
+            else
+            {
+                glColor3f(1, 0, 0);
+            }
             glVertex3f(b.second.mean.x(), b.second.mean.y(), b.second.mean.z());
+        }
         glEnd();
     }
 
@@ -2087,7 +2097,17 @@ void display()
         glColor3f(0, 0, 1);
         glBegin(GL_POINTS);
         for (const auto& b : params.buckets_outdoor)
+        {
+            if (b.second.number_of_points == -1)
+            {
+                glColor3f(1, 0, 1);
+            }
+            else
+            {
+                glColor3f(0, 0, 1);
+            }
             glVertex3f(b.second.mean.x(), b.second.mean.y(), b.second.mean.z());
+        }
         glEnd();
     }
 

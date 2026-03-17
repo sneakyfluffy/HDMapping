@@ -422,7 +422,7 @@ void ManualPoseGraphLoopClosure::Render(
             if (i >= 0 && i < point_clouds_container.point_clouds.size() && point_clouds_container.point_clouds.size() > 0)
             {
                 ObservationPicking observation_picking;
-                point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, false, false, false, 10000, false);
+                point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
             }
         }
 
@@ -431,7 +431,7 @@ void ManualPoseGraphLoopClosure::Render(
             if (i >= 0 && i < point_clouds_container.point_clouds.size() && point_clouds_container.point_clouds.size() > 0)
             {
                 ObservationPicking observation_picking;
-                point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, false, false, false, 10000, false);
+                point_clouds_container.point_clouds.at(i).render(false, observation_picking, 1, 1, false, false, false, 10000, false);
             }
         }
     }
@@ -452,12 +452,12 @@ void ManualPoseGraphLoopClosure::Render(
                         color[0] = 1.0;
                         color[1] = 0.0;
                         color[2] = 0.0;
-                        point_clouds_container.point_clouds.at(index_src).render(m_src, 1, color);
+                        point_clouds_container.point_clouds.at(index_src).render(m_src, 1, 1, color);
                     }
                     else
                     {
                         point_clouds_container.point_clouds.at(index_src).render(
-                            m_src, 1, point_clouds_container.point_clouds.at(index_src).render_color);
+                            m_src, 1, 1, point_clouds_container.point_clouds.at(index_src).render_color);
                     }
                 }
             }
@@ -482,12 +482,12 @@ void ManualPoseGraphLoopClosure::Render(
                         color[0] = 0.0;
                         color[1] = 0.0;
                         color[2] = 1.0;
-                        point_clouds_container.point_clouds.at(index_trg + i).render(m_trg, 1, color);
+                        point_clouds_container.point_clouds.at(index_trg + i).render(m_trg, 1, 1, color);
                     }
                     else
                     {
                         point_clouds_container.point_clouds.at(index_trg + i)
-                            .render(m_trg, 1, point_clouds_container.point_clouds.at(index_trg + i).render_color);
+                            .render(m_trg, 1, 1, point_clouds_container.point_clouds.at(index_trg + i).render_color);
                     }
                 }
             }
