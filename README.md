@@ -224,6 +224,7 @@ ToDo
 - https://ieeexplore.ieee.org/document/10954274
 - https://www.sciencedirect.com/science/article/abs/pii/S0921889025001903
 - https://www.mdpi.com/2072-4292/17/15/2661
+- https://github.com/Livox-SDK/LIO-Livox
 
 # Knowledge base (accuracy, precision, benchmarks, comparison to other mobile mapping systems, etc.)
 
