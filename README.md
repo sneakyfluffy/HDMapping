@@ -306,10 +306,18 @@ More information can be found in:
 ```
 
 # 0.101 VIDEOs
+
+Make session from ALS
+
 [![Make session from ALS](https://img.youtube.com/vi/k6nysHveoKU/default.jpg)](https://youtu.be/U7hYEQfdfDU)
+
+Make cave map
+
 [![Make cave map](https://img.youtube.com/vi/k6nysHveoKU/default.jpg)](https://youtu.be/srcf6qu7I08)
 
 # 0.94 VIDEOs
+
+IMU inclination prior
 
 [![IMU inclination prior](https://img.youtube.com/vi/k6nysHveoKU/default.jpg)](https://youtu.be/k6nysHveoKU)
 
