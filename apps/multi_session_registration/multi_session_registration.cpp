@@ -2186,14 +2186,14 @@ void settings_gui()
         static bool open_import_popup = false;
         static bool show_instruction = false;
 
-        ImGui::Dummy(ImVec2(0, 10)); 
+        ImGui::Dummy(ImVec2(0, 10));
 
         if (ImGui::Button("Import Benchmark Output Folders"))
         {
             open_import_popup = true;
             ImGui::OpenPopup("Import Benchmark");
         }
-        
+
         if (ImGui::BeginPopupModal("Import Benchmark", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::Text("Import benchmark sessions");
@@ -2207,51 +2207,60 @@ void settings_gui()
             ImGui::Dummy(ImVec2(0, 10));
             if (ImGui::Button("Select Folder"))
             {
-                const std::string algorithms[] = {
-                    "ct-icp", "glim", "super-lio", "dlio", "i2ekf-lo",
-                    "superOdom", "lego-loam", "faster-lio",
-                    "kiss-icp", "fast-lio", "lio-ekf", "genz-icp", "point-lio",
-                    "ig-lio", "dlo", "lidar_odometry_ros_wrapper"
-                };
+                const std::string algorithms[] = { "ct-icp",    "glim",      "super-lio", "dlio",
+                                                   "i2ekf-lo",  "superOdom", "lego-loam", "faster-lio",
+                                                   "kiss-icp",  "fast-lio",  "lio-ekf",   "genz-icp",
+                                                   "point-lio", "ig-lio",    "dlo",       "lidar_odometry_ros_wrapper" };
 
                 std::vector<fs::path> missing;
                 std::unordered_map<std::string, std::string> algo_map;
 
-                for (const auto& algo : algorithms) {
-                    if (algo == "kiss-icp") {
+                for (const auto& algo : algorithms)
+                {
+                    if (algo == "kiss-icp")
+                    {
                         algo_map[algo] = "output_hdmapping-kiss";
-                    } else if (algo == "genz-icp") {
+                    }
+                    else if (algo == "genz-icp")
+                    {
                         algo_map[algo] = "output_hdmapping-genz";
-                    } else if (algo == "lidar_odometry_ros_wrapper") {
+                    }
+                    else if (algo == "lidar_odometry_ros_wrapper")
+                    {
                         algo_map[algo] = "output_hdmapping-lidar-odometry-ros";
-                    } else {
+                    }
+                    else
+                    {
                         algo_map[algo] = "output_hdmapping-" + algo;
                     }
                 }
 
                 fs::path path = fs::path(mandeye::fd::SelectFolder("Add sessions"));
 
-                for (const auto& algo : algorithms) {
+                for (const auto& algo : algorithms)
+                {
                     fs::path output_folder = path / algo / algo_map[algo];
                     fs::path session_file = output_folder / "session.json";
 
-                    if (fs::is_directory(output_folder)) {
-                        auto it = std::find(
-                            project_settings.session_file_names.begin(),
-                            project_settings.session_file_names.end(),
-                            session_file
-                        );
+                    if (fs::is_directory(output_folder))
+                    {
+                        auto it =
+                            std::find(project_settings.session_file_names.begin(), project_settings.session_file_names.end(), session_file);
 
-                        if (it == project_settings.session_file_names.end()) { 
+                        if (it == project_settings.session_file_names.end())
+                        {
                             std::cout << "Adding session file: '" << session_file << "'" << std::endl;
                             project_settings.session_file_names.push_back(session_file);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         missing.push_back(output_folder);
                     }
                 }
 
-                for (const auto& miss : missing) {
+                for (const auto& miss : missing)
+                {
                     std::cout << miss << " doesn't exist" << std::endl;
                 }
             }
@@ -2273,10 +2282,8 @@ void settings_gui()
 
                 ImGui::Spacing();
 
-                ImGui::TextWrapped(
-                    "Folders must follow the structure generated in benchmark-HDMapping-Orchestration (step 3):");
-                ImGui::TextWrapped(
-                    "https://github.com/MapsHD/benchmark-HDMapping-Orchestration");
+                ImGui::TextWrapped("Folders must follow the structure generated in benchmark-HDMapping-Orchestration (step 3):");
+                ImGui::TextWrapped("https://github.com/MapsHD/benchmark-HDMapping-Orchestration");
 
                 ImGui::Spacing();
                 ImGui::Separator();
@@ -3389,10 +3396,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampLidar,x,y,z,"
-                                    << "r00,r01,r02,"
-                                    << "r10,r11,r12,"
-                                    << "r20,r21,r22\n";
+                            outfile << "timestampLidar,x,y,z," << "r00,r01,r02," << "r10,r11,r12," << "r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3447,8 +3451,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampUnix,x,y,z,"
-                                    << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
+                            outfile << "timestampUnix,x,y,z," << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3499,8 +3502,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                                 continue;
                             }
 
-                            outfile << "timestampLidar,timestampUnix,x,y,z,"
-                                    << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
+                            outfile << "timestampLidar,timestampUnix,x,y,z," << "r00,r01,r02,r10,r11,r12,r20,r21,r22\n";
 
                             for (const auto& pc : session.point_clouds_container.point_clouds)
                             {
@@ -3769,14 +3771,12 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
             {
                 ImGui::BeginTooltip();
                 ImGui::Text("Point cloud alignment (registration) algorithm");
-                ImGui::Text(
-                    "Probabilistic alternative to ICP that models one cloud (the target)\nas a set of Gaussian distributions "
-                    "rather than raw points");
+                ImGui::Text("Probabilistic alternative to ICP that models one cloud (the target)\nas a set of Gaussian distributions "
+                            "rather than raw points");
                 ImGui::Text(
                     "Robust for rough initial poses but can converge to a local optimum\nif the initial misalignment is very large");
-                ImGui::Text(
-                    "Known for being faster and smoother in optimization because\nit replaces discrete point-point correspondences "
-                    "with continuous probability density functions.");
+                ImGui::Text("Known for being faster and smoother in optimization because\nit replaces discrete point-point correspondences "
+                            "with continuous probability density functions.");
                 ImGui::EndTooltip();
             }
 
@@ -3941,9 +3941,7 @@ pose_tait_bryan_from_affine_matrix(m_src.inverse() * m_g);
                 {
                     std::cout << "Removing session: " << project_settings.session_file_names[idx] << std::endl;
 
-                    project_settings.session_file_names.erase(
-                        project_settings.session_file_names.begin() + idx
-                    );
+                    project_settings.session_file_names.erase(project_settings.session_file_names.begin() + idx);
 
                     if (idx < sessions.size())
                         sessions.erase(sessions.begin() + idx);
